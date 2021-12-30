@@ -15,4 +15,8 @@ $(document).ready(() => {
     window.location.href = "customer.html";
     return false;
   });
+  $(".btn-vm-panel").click(() => {
+    window.location.href = "vending-machine.html";
+    return false;
+  });
 });

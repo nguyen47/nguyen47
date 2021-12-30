@@ -2,38 +2,47 @@ $(document).ready(async () => {
   const coinSelector = $(".coin");
   const totalCoinSelector = $(".total-coin");
 
-  const drinks = await fetchDrinks();
+  let drinks = await fetchDrinks();
+  renderTable(drinks);
+
   const coins = await fetchCoins();
 
   let totalCoin = 0;
   coinSelector.click((event) => {
-    const value = event.target.value;
-    totalCoin = totalCoin + parseFloat(value);
-    totalCoinSelector.val(totalCoin.toFixed(1));
+    const value = parseFloat(event.target.value);
+    totalCoin = totalCoin + value;
+    addCoin(value);
+    totalCoinSelector.val(totalCoin);
   });
 
-  renderTable(drinks);
-
-  $(".buy").click(() => {
+  $(".buy").click(async () => {
     const selectedDrink = $("input[type='radio'][name='drink']:checked");
     const drinkFound = drinks.find(
       (d) => d.id === parseInt(selectedDrink.val())
     );
     if (drinkFound) {
       const excessMoney = totalCoin - drinkFound.price;
-
       if (excessMoney >= 0) {
-        drinks[drinkFound.id - 1].stock--;
+        removeDrinkStock(drinkFound.id);
+        const coinValid = validCoin(coins);
+        const moneyChange = getMoneyChange(excessMoney, coinValid);
+        drinks = await fetchDrinks();
         renderTable(drinks);
-
         totalCoin = excessMoney;
-
-        totalCoinSelector.val(excessMoney.toFixed(1));
-        $(".excess-money").html(excessMoney.toFixed(1));
+        totalCoinSelector.val(excessMoney);
+        renderChangeCoins(moneyChange, excessMoney);
       } else {
         console.log(`You don't have enough money`);
       }
     }
+  });
+
+  $(".finish").click(() => {
+    totalCoinSelector.val(0);
+    $(".excess-money").html("");
+    $(".finish").prop("hidden", true);
+
+    totalCoin = 0;
   });
 });
 
@@ -44,14 +53,14 @@ const renderTable = (data) => {
     if (value.stock <= 0) {
       coinTable += "<tr>";
       coinTable += "<td>" + value.drinks + "</td>";
-      coinTable += "<td>" + value.price + "</td>";
+      coinTable += "<td>" + value.price + "¢</td>";
       coinTable += "<td>Out of stock</td>";
       coinTable += `<td> <input type='radio' disabled name="drink" value="${value.id}" /> </td>`;
       coinTable += "</tr>";
     } else {
       coinTable += "<tr>";
       coinTable += "<td>" + value.drinks + "</td>";
-      coinTable += "<td>" + value.price + "</td>";
+      coinTable += "<td>" + value.price + "¢ </td>";
       coinTable += "<td>" + value.stock + "</td>";
       coinTable += `<td> <input type='radio' name="drink" value="${value.id}" /> </td>`;
       coinTable += "</tr>";
@@ -61,19 +70,111 @@ const renderTable = (data) => {
 };
 
 const fetchDrinks = async () => {
-  const drinks = $.getJSON("../drink.json", (data) => {
-    return data;
-  }).fail(function () {
-    console.log("An error has occurred.");
-  });
-  return drinks;
+  if (!localStorage.getItem("drinks")) {
+    return $.getJSON("../json/drink.json", (data) => {
+      localStorage.setItem("drinks", JSON.stringify(data));
+    }).fail(() => {
+      console.log("An error has occurred.");
+    });
+  }
+  return JSON.parse(localStorage.getItem("drinks"));
 };
 
 const fetchCoins = async () => {
-  const coins = $.getJSON("../coin.json", (data) => {
-    return data;
-  }).fail(function () {
-    console.log("An error has occurred.");
-  });
+  if (!localStorage.getItem("coins")) {
+    return $.getJSON("../json/coin.json", (data) => {
+      localStorage.setItem("coins", JSON.stringify(data));
+    }).fail(() => {
+      console.log("An error has occurred.");
+    });
+  }
+  return JSON.parse(localStorage.getItem("coins"));
+};
+
+const addCoin = (coinValue) => {
+  const coins = JSON.parse(localStorage.getItem("coins"));
+  const coin = coins.find((c) => c.value === coinValue);
+  coins[coin.id - 1].stock++;
+  localStorage.setItem("coins", JSON.stringify(coins));
   return coins;
+};
+
+const subtractCoin = (coinValue) => {
+  const coins = JSON.parse(localStorage.getItem("coins"));
+  const coin = coins.find((c) => c.value === coinValue);
+  coins[coin.id - 1].stock--;
+  localStorage.setItem("coins", JSON.stringify(coins));
+  return coins;
+};
+
+const removeDrinkStock = (value) => {
+  const drinks = JSON.parse(localStorage.getItem("drinks"));
+  const drink = drinks.find((d) => d.id === value);
+  drinks[drink.id - 1].stock--;
+  localStorage.setItem("drinks", JSON.stringify(drinks));
+  return drinks;
+};
+
+const removeCoinStock = (value, amount) => {
+  const coins = JSON.parse(localStorage.getItem("coins"));
+  const coin = coins.find((c) => c.value === parseInt(value));
+  coins[coin.id - 1].stock -= amount;
+  localStorage.setItem("coins", JSON.stringify(coins));
+  return coins;
+};
+
+const getMoneyChange = (money, bills) => {
+  if (bills[0] < bills[1]) bills.reverse();
+  const change = {};
+  bills.forEach((b) => {
+    change[b] = Math.floor(money / b);
+    money -= b * change[b];
+  });
+
+  for (const key in change) {
+    removeCoinStock(key, change[key]);
+  }
+  return change;
+};
+
+const validCoin = (coins) => {
+  const coinValid = [];
+  coins.forEach((c) => {
+    if (c.stock >= 0) coinValid.push(c.value);
+  });
+  return coinValid;
+};
+
+const renderChangeCoins = (moneyChange, excessMoney) => {
+  $(".excess-money").html(`
+    <h2>Excess Money</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Type Of Coin</th>
+          <th scope="col">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>10¢</td>
+          <td>${moneyChange[10] || 0}</td>
+        </tr>
+        <tr>
+          <td>20¢</td>
+          <td>${moneyChange[20] || 0}</td>
+        </tr>
+        <tr>
+          <td>50¢</td>
+          <td>${moneyChange[50] || 0}</td>
+        </tr>
+        <tr>
+          <td>1 RM</td>
+          <td>${moneyChange[100] || 0}</td>
+        </tr>
+      </tbody>
+    </table>
+    <h1>${excessMoney}¢</h1>
+  `);
+  $(".finish").prop("hidden", false);
 };

@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "drinks": "Pepsi",
+    "price": 100,
+    "stock": 1
+  },
+  {
+    "id": 2,
+    "drinks": "Coke",
+    "price": 70,
+    "stock": 0
+  },
+  {
+    "id": 3,
+    "drinks": "Fanta",
+    "price": 70,
+    "stock": 20
+  },
+  {
+    "id": 4,
+    "drinks": "Sprite",
+    "price": 10,
+    "stock": 20
+  },
+  {
+    "id": 5,
+    "drinks": "Monster",
+    "price": 70,
+    "stock": 20
+  },
+  {
+    "id": 6,
+    "drinks": "Tiger Beer",
+    "price": 70,
+    "stock": 20
+  },
+  {
+    "id": 7,
+    "drinks": "Strongbow",
+    "price": 70,
+    "stock": 20
+  },
+  {
+    "id": 8,
+    "drinks": "Sting",
+    "price": 70,
+    "stock": 20
+  },
+  {
+    "id": 9,
+    "drinks": "Ice Tea",
+    "price": 70,
+    "stock": 20
+  },
+  {
+    "id": 10,
+    "drinks": "Milk Tea",
+    "price": 50,
+    "stock": 20
+  }
+]
