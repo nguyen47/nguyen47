@@ -16,7 +16,7 @@
       integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
       crossorigin="anonymous"
     ></script>
-    <script src="js/vending-machine.js"></script>
+    <script src="js/machinery.js"></script>
     <title>Vending Machine</title>
   </head>
   <body>
@@ -32,6 +32,7 @@
         </thead>
         <tbody></tbody>
       </table>
+      <button class="btn btn-add-drink btn-primary mb-3">Add New Drink</button>
       <h2>Coins Management</h2>
       <table class="table coins-management">
         <thead>
@@ -152,6 +153,73 @@
             </button>
             <button type="button" class="btn-save-delete-drink btn btn-danger">
               Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Drink -->
+    <div
+      class="modal fade"
+      id="drink-modal-adding"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">New Drink</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Drink</label>
+              <input
+                type="text"
+                class="form-control"
+                id="add-drink-name"
+                placeholder="Enter Drink"
+              />
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Price</label>
+              <input
+                type="number"
+                class="form-control"
+                id="add-drink-price"
+                placeholder="Price"
+              />
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Stock</label>
+              <input
+                type="number"
+                class="form-control"
+                id="add-drink-stock"
+                placeholder="Stock"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn-save-add-drink btn btn-primary">
+              Save changes
             </button>
           </div>
         </div>

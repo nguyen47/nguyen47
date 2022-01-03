@@ -1,70 +1,80 @@
 $(document).ready(async () => {
+  const state = localStorage.getItem("state");
+  if (state === "false") {
+    window.location.href = "index.html";
+    return false;
+  }
   const coinSelector = $(".coin");
   const totalCoinSelector = $(".total-coin");
 
   let drinks = await fetchDrinks();
   renderTable(drinks);
-
   const coins = await fetchCoins();
-
   let totalCoin = 0;
   coinSelector.click((event) => {
-    const value = parseFloat(event.target.value);
-    totalCoin = totalCoin + value;
-    addCoin(value);
+    const totalCoinDeposit = depositCoin(event);
+    totalCoin += totalCoinDeposit;
     totalCoinSelector.val(totalCoin);
   });
 
   $(".buy").click(async () => {
-    const selectedDrink = $("input[type='radio'][name='drink']:checked");
-    const drinkFound = drinks.find(
-      (d) => d.id === parseInt(selectedDrink.val())
-    );
-    if (drinkFound) {
-      const excessMoney = totalCoin - drinkFound.price;
-      if (excessMoney >= 0) {
-        removeDrinkStock(drinkFound.id);
-        const coinValid = validCoin(coins);
-        const moneyChange = getMoneyChange(excessMoney, coinValid);
-        drinks = await fetchDrinks();
-        renderTable(drinks);
-        totalCoin = excessMoney;
-        totalCoinSelector.val(excessMoney);
-        renderChangeCoins(moneyChange, excessMoney);
-      } else {
-        console.log(`You don't have enough money`);
-      }
-    }
+    await buyDrinks(drinks, totalCoin, coins, totalCoinSelector);
   });
 
   $(".finish").click(() => {
-    totalCoinSelector.val(0);
-    $(".excess-money").html("");
-    $(".finish").prop("hidden", true);
-
+    finishBuying(totalCoinSelector);
     totalCoin = 0;
   });
 });
+
+const finishBuying = () => {
+  totalCoinSelector.val(0);
+  $(".excess-money").html("");
+  $(".finish").prop("hidden", true);
+};
+
+const depositCoin = (event) => {
+  let totalCoin = 0;
+  const depositCoin = parseFloat(event.target.value);
+  totalCoin = totalCoin + depositCoin;
+  addCoin(depositCoin);
+  return depositCoin;
+};
+
+const buyDrinks = async (drinks, totalCoin, coins, totalCoinSelector) => {
+  const selectedDrink = $("input[type='radio'][name='drink']:checked");
+  const drinkFound = drinks.find((d) => d.id === parseInt(selectedDrink.val()));
+  if (drinkFound) {
+    const excessMoney = totalCoin - drinkFound.price;
+    if (excessMoney >= 0) {
+      removeDrinkStock(drinkFound.id);
+      const validCoinStorage = validCoinFound(coins);
+      const moneyChange = getMoneyChange(excessMoney, validCoinStorage);
+      drinks = await fetchDrinks();
+      renderTable(drinks);
+      totalCoin = excessMoney;
+      totalCoinSelector.val(excessMoney);
+      renderChangeCoinsTemplate(moneyChange, excessMoney);
+    } else {
+      console.log(`You don't have enough money`);
+    }
+  }
+};
 
 const renderTable = (data) => {
   $("table > tbody").empty();
   let coinTable = "";
   $.each(data, (key, value) => {
-    if (value.stock <= 0) {
-      coinTable += "<tr>";
-      coinTable += "<td>" + value.drinks + "</td>";
-      coinTable += "<td>" + value.price + "¢</td>";
-      coinTable += "<td>Out of stock</td>";
-      coinTable += `<td> <input type='radio' disabled name="drink" value="${value.id}" /> </td>`;
-      coinTable += "</tr>";
-    } else {
-      coinTable += "<tr>";
-      coinTable += "<td>" + value.drinks + "</td>";
-      coinTable += "<td>" + value.price + "¢ </td>";
-      coinTable += "<td>" + value.stock + "</td>";
-      coinTable += `<td> <input type='radio' name="drink" value="${value.id}" /> </td>`;
-      coinTable += "</tr>";
-    }
+    coinTable += `<tr>`;
+    coinTable += `<td> ${value.drinks} </td>`;
+    coinTable += `<td> ${value.price}¢ </td>`;
+    coinTable += `<td> ${
+      value.stock <= 0 ? "Out Of Stock" : value.stock
+    } </td>`;
+    coinTable += `<td> <input type='radio' ${
+      value.stock <= 0 ? "disabled" : ""
+    } name="drink" value="${value.id}" /> </td>`;
+    coinTable += `</tr>`;
   });
   $("table").append(coinTable);
 };
@@ -93,32 +103,32 @@ const fetchCoins = async () => {
 
 const addCoin = (coinValue) => {
   const coins = JSON.parse(localStorage.getItem("coins"));
-  const coin = coins.find((c) => c.value === coinValue);
-  coins[coin.id - 1].stock++;
+  const coinIndex = coins.findIndex((c) => c.value === coinValue);
+  coins[coinIndex].stock++;
   localStorage.setItem("coins", JSON.stringify(coins));
   return coins;
 };
 
 const subtractCoin = (coinValue) => {
   const coins = JSON.parse(localStorage.getItem("coins"));
-  const coin = coins.find((c) => c.value === coinValue);
-  coins[coin.id - 1].stock--;
+  const coinIndex = coins.findIndex((c) => c.value === coinValue);
+  coins[coinIndex].stock--;
   localStorage.setItem("coins", JSON.stringify(coins));
   return coins;
 };
 
 const removeDrinkStock = (value) => {
   const drinks = JSON.parse(localStorage.getItem("drinks"));
-  const drink = drinks.find((d) => d.id === value);
-  drinks[drink.id - 1].stock--;
+  const drinkIndex = drinks.findIndex((d) => d.id === value);
+  drinks[drinkIndex].stock--;
   localStorage.setItem("drinks", JSON.stringify(drinks));
   return drinks;
 };
 
 const removeCoinStock = (value, amount) => {
   const coins = JSON.parse(localStorage.getItem("coins"));
-  const coin = coins.find((c) => c.value === parseInt(value));
-  coins[coin.id - 1].stock -= amount;
+  const coinIndex = coins.findIndex((c) => c.value === parseInt(value));
+  coins[coinIndex].stock -= amount;
   localStorage.setItem("coins", JSON.stringify(coins));
   return coins;
 };
@@ -137,7 +147,7 @@ const getMoneyChange = (money, bills) => {
   return change;
 };
 
-const validCoin = (coins) => {
+const validCoinFound = (coins) => {
   const coinValid = [];
   coins.forEach((c) => {
     if (c.stock >= 0) coinValid.push(c.value);
@@ -145,7 +155,7 @@ const validCoin = (coins) => {
   return coinValid;
 };
 
-const renderChangeCoins = (moneyChange, excessMoney) => {
+const renderChangeCoinsTemplate = (moneyChange, excessMoney) => {
   $(".excess-money").html(`
     <h2>Excess Money</h2>
     <table class="table">
