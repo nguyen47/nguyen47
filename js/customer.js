@@ -1,6 +1,6 @@
 $(document).ready(async () => {
   const state = localStorage.getItem("state");
-  if (state === "false") {
+  if (state === "false" || state === null) {
     window.location.href = "index.html";
     return false;
   }
@@ -27,7 +27,7 @@ $(document).ready(async () => {
   });
 });
 
-const finishBuying = () => {
+const finishBuying = (totalCoinSelector) => {
   totalCoinSelector.val(0);
   $(".excess-money").html("");
   $(".finish").prop("hidden", true);
@@ -47,9 +47,9 @@ const buyDrinks = async (drinks, totalCoin, coins, totalCoinSelector) => {
   if (drinkFound) {
     const excessMoney = totalCoin - drinkFound.price;
     if (excessMoney >= 0) {
-      removeDrinkStock(drinkFound.id);
       const validCoinStorage = validCoinFound(coins);
       const moneyChange = getMoneyChange(excessMoney, validCoinStorage);
+      removeDrinkStock(drinkFound.id);
       drinks = await fetchDrinks();
       renderTable(drinks);
       totalCoin = excessMoney;
@@ -66,7 +66,7 @@ const renderTable = (data) => {
   let coinTable = "";
   $.each(data, (key, value) => {
     coinTable += `<tr>`;
-    coinTable += `<td> ${value.drinks} </td>`;
+    coinTable += `<td> ${value.drink} </td>`;
     coinTable += `<td> ${value.price}¢ </td>`;
     coinTable += `<td> ${
       value.stock <= 0 ? "Out Of Stock" : value.stock

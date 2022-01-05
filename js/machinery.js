@@ -1,50 +1,67 @@
 $(document).ready(async () => {
   const state = localStorage.getItem("state");
-  if (state === "false") {
+  if (state === "false" || state === null) {
     window.location.href = "index.html";
     return false;
   }
-  const editDrinkModalSelector = $(".btn-edit-drink");
-  const updateDrinkButtonSelector = $(".btn-save-drink");
-  const deleteDrinkModalSelector = $(".btn-delete-drink");
-  const addDrinkModalSelector = $(".btn-add-drink");
-  const addNewDrinkButtonSelector = $(".btn-add-new-drink");
-  const deleteDrinkButtonSelector = $(".btn-save-delete-drink");
 
   let drinks = await fetchDrinks();
   renderDrinkTable(drinks);
   let coins = await fetchCoins();
   renderCoinTable(coins);
-  editDrinkModalSelector.click((event) => {
+  $(".btn-edit-drink").click((event) => {
     displayUpdateModal(event, drinks);
   });
-  updateDrinkButtonSelector.click(async () => {
-    drinks = await fetchDrinks();
-    updateDrink(drinks);
-  });
-  deleteDrinkModalSelector.click((event) => {
+  $(".btn-delete-drink").click((event) => {
     displayDrinkModal(event, drinks);
   });
-  deleteDrinkButtonSelector.click(() => {
+  $(".btn-save-add-drink").click(() => {
+    addNewDrink(drinks);
+  });
+  $(".btn-save-drink").click(async () => {
+    await updateDrink();
+  });
+  $(".btn-save-delete-drink").click(() => {
     deleteDrink(drinks);
   });
-  addDrinkModalSelector.click(() => {
+  $(".btn-add-drink").click(() => {
     $("#drink-modal-adding").modal("show");
   });
-  addNewDrinkButtonSelector.click(() => {
-    addNewDrink(drinks);
+  $(".btn-update-coin").click((event) => {
+    displayCoinModal(event, coins);
+  });
+  $(".btn-save-update-coin").click(async () => {
+    await updateCoin();
   });
 });
 
-const updateDrink = (drinks) => {
-  const drinkId = $("#drink-id").val();
-  const foundIndex = drinks.findIndex((d) => d.id === drinkId);
+const updateCoin = async () => {
+  const coins = await fetchCoins();
+  const coinValue = parseInt($("#typeOfCoin").val());
+  const coinIndex = coins.findIndex((c) => c.value === coinValue);
+  coins[coinIndex].stock = parseInt($("#coinStock").val());
+  localStorage.setItem("coins", JSON.stringify(coins));
+  $("#coin-coin").modal("hide");
+  location.reload();
+};
+
+const displayCoinModal = (event, coins) => {
+  $("#coin-modal").modal("show");
+  const coin = coins.find((c) => c.id === parseInt(event.target.value));
+  $("#typeOfCoin").val(coin.value);
+  $("#coinStock").val(coin.stock);
+};
+
+const updateDrink = async () => {
+  const drinks = await fetchDrinks();
+  const drinkId = parseInt($("#drink-id").val());
+  const drinkIndex = drinks.findIndex((d) => d.id === drinkId);
   const drinkName = $("#drink-name").val();
   const drinkPrice = $("#drink-price").val();
   const drinkStock = $("#drink-stock").val();
-  drinks[foundIndex].drinks = drinkName;
-  drinks[foundIndex].price = parseInt(drinkPrice);
-  drinks[foundIndex].stock = parseInt(drinkStock);
+  drinks[drinkIndex].drink = drinkName;
+  drinks[drinkIndex].price = parseInt(drinkPrice);
+  drinks[drinkIndex].stock = parseInt(drinkStock);
   localStorage.setItem("drinks", JSON.stringify(drinks));
   $("#drink-modal").modal("hide");
   location.reload();
@@ -55,7 +72,7 @@ const displayUpdateModal = (event, drinks) => {
   const drink = drinks.find((d) => d.id === id);
   $("#drink-modal").modal("show");
   $("#drink-id").val(drink.id);
-  $("#drink-name").val(drink.drinks);
+  $("#drink-name").val(drink.drink);
   $("#drink-price").val(drink.price);
   $("#drink-stock").val(drink.stock);
 };
@@ -69,7 +86,6 @@ const displayDrinkModal = (event, drinks) => {
 
 const deleteDrink = (drinks) => {
   const id = parseInt($("#drink-id").val());
-  console.log(id);
   const removeIndex = drinks.findIndex((d) => d.id === id);
   drinks.splice(removeIndex, 1);
   localStorage.setItem("drinks", JSON.stringify(drinks));
@@ -84,7 +100,7 @@ const addNewDrink = (drinks) => {
   const drinkStock = parseInt($("#add-drink-stock").val());
   const newDrink = {
     id: drinkId,
-    drinks: drinkName,
+    drink: drinkName,
     price: drinkPrice,
     stock: drinkStock,
   };
@@ -100,7 +116,7 @@ const renderDrinkTable = (data) => {
   $.each(data, (key, value) => {
     if (value.stock <= 0) {
       coinTable += "<tr>";
-      coinTable += "<td>" + value.drinks + "</td>";
+      coinTable += "<td>" + value.drink + "</td>";
       coinTable += "<td>" + value.price + "¢</td>";
       coinTable += "<td>Out of stock</td>";
       coinTable += `<td>
@@ -110,7 +126,7 @@ const renderDrinkTable = (data) => {
       coinTable += "</tr>";
     } else {
       coinTable += "<tr>";
-      coinTable += "<td>" + value.drinks + "</td>";
+      coinTable += "<td>" + value.drink + "</td>";
       coinTable += "<td>" + value.price + "¢ </td>";
       coinTable += "<td>" + value.stock + "</td>";
       coinTable += `<td>
@@ -127,19 +143,11 @@ const renderCoinTable = (data) => {
   $(".coins-management > tbody").empty();
   let coinTable = "";
   $.each(data, (key, value) => {
-    if (value.stock <= 0) {
-      coinTable += "<tr>";
-      coinTable += "<td>" + value.value + "</td>";
-      coinTable += "<td>" + value.stock + "</td>";
-      coinTable += `<td><button type="button" disabled class="btn btn-primary value="${value.id}">Edit</button></td>`;
-      coinTable += "</tr>";
-    } else {
-      coinTable += "<tr>";
-      coinTable += "<td>" + value.value + "</td>";
-      coinTable += "<td>" + value.stock + "</td>";
-      coinTable += `<td><button type="button" class="btn btn-primary value="${value.id}">Edit</button></td>`;
-      coinTable += "</tr>";
-    }
+    coinTable += "<tr>";
+    coinTable += "<td>" + value.value + "</td>";
+    coinTable += "<td>" + value.stock + "</td>";
+    coinTable += `<td><button type="button" class="btn-update-coin btn btn-primary" value="${value.id}">Edit</button></td>`;
+    coinTable += "</tr>";
   });
   $(".coins-management").append(coinTable);
 };
