@@ -4,7 +4,12 @@ $(document).ready(async () => {
     window.location.href = "index.html";
     return false;
   }
-
+  const isLogin = localStorage.getItem("isLogin");
+  if (isLogin === "false" || isLogin === null) {
+    $(".status").html("Lock");
+  } else {
+    $(".status").html("Unlock");
+  }
   let drinks = await fetchDrinks();
   renderDrinkTable(drinks);
   let coins = await fetchCoins();
@@ -121,7 +126,6 @@ const renderDrinkTable = (data) => {
       coinTable += "<td>Out of stock</td>";
       coinTable += `<td>
         <button type="button" class="btn-edit-drink btn btn-primary" value="${value.id}" data-toggle="modal">Edit</button>
-        <button type="button" class="btn-delete-drink btn btn-danger" value="${value.id}" data-toggle="modal">Delete</button>
       </td>`;
       coinTable += "</tr>";
     } else {
@@ -131,7 +135,6 @@ const renderDrinkTable = (data) => {
       coinTable += "<td>" + value.stock + "</td>";
       coinTable += `<td>
         <button type="button" class="btn-edit-drink btn btn-primary" value="${value.id}" data-toggle="modal">Edit</button>
-        <button type="button" class="btn-delete-drink btn btn-danger" value="${value.id}" data-toggle="modal">Delete</button>
       </td>`;
       coinTable += "</tr>";
     }

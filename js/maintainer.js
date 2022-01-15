@@ -12,10 +12,12 @@ $(document).ready(() => {
     $(".btn-unlock").click(() => {
       const password = $("#password").val();
       if (password !== "123456") {
-        console.log("Wrong Password");
+        toastr.error("Wrong Password", "Error!");
         return;
       }
       localStorage.setItem("isLogin", true);
+      location.reload();
+
       $(".password-input").hide();
       $(".machine").show();
     });
@@ -29,7 +31,7 @@ $(document).ready(() => {
         (c) => c.value === parseInt(event.target.value)
       );
       const totalValue = coins[coinIndex].stock * 10;
-      $(".coin-result").html(convertToRM(totalValue));
+      $(".coin-result").html(convertToRM(totalValue / 100));
     });
     $(".btn-20-cent").click(async (event) => {
       const coins = await fetchCoins();
@@ -37,7 +39,7 @@ $(document).ready(() => {
         (c) => c.value === parseInt(event.target.value)
       );
       const totalValue = coins[coinIndex].stock * 20;
-      $(".coin-result").html(convertToRM(totalValue));
+      $(".coin-result").html(convertToRM(totalValue / 100));
     });
     $(".btn-50-cent").click(async (event) => {
       const coins = await fetchCoins();
@@ -45,7 +47,7 @@ $(document).ready(() => {
         (c) => c.value === parseInt(event.target.value)
       );
       const totalValue = coins[coinIndex].stock * 50;
-      $(".coin-result").html(convertToRM(totalValue));
+      $(".coin-result").html(convertToRM(totalValue / 100));
     });
     $(".btn-100-cent").click(async (event) => {
       const coins = await fetchCoins();
@@ -53,7 +55,7 @@ $(document).ready(() => {
         (c) => c.value === parseInt(event.target.value)
       );
       const totalValue = coins[coinIndex].stock * 100;
-      $(".coin-result").html(convertToRM(totalValue));
+      $(".coin-result").html(convertToRM(totalValue / 100));
     });
     $(".btn-new-drink").click(() => {
       window.location.href = "machinery.html";
@@ -68,7 +70,7 @@ $(document).ready(() => {
           total += element.stock * element.value;
         }
       }
-      $(".total-cash").html(convertToRM(total));
+      $(".total-cash").html(convertToRM(total / 100));
     });
     $(".btn-collect-cash").click(async () => {
       const coins = await fetchCoins();

@@ -11,14 +11,43 @@ $(document).ready(async () => {
   renderTable(drinks);
   const coins = await fetchCoins();
   let totalCoin = 0;
+
   coinSelector.click((event) => {
-    const totalCoinDeposit = depositCoin(event);
-    totalCoin += totalCoinDeposit;
+    const depositCoin = parseFloat(event.target.value);
+    totalCoin = totalCoin + depositCoin;
+    addCoin(depositCoin);
     totalCoinSelector.val(totalCoin);
   });
 
   $(".buy").click(async () => {
-    await buyDrinks(drinks, totalCoin, coins, totalCoinSelector);
+    const selectedDrink = $("input[type='radio'][name='drink']:checked");
+    const drinkFound = drinks.find(
+      (d) => d.id === parseInt(selectedDrink.val())
+    );
+    if (drinkFound) {
+      const excessMoney = totalCoin - drinkFound.price;
+      if (excessMoney >= 0) {
+        const validCoinStorage = validCoinFound(coins);
+        const moneyChange = getMoneyChange(excessMoney, validCoinStorage);
+        removeDrinkStock(drinkFound.id);
+        drinks = await fetchDrinks();
+        renderTable(drinks);
+        totalCoin = excessMoney;
+        totalCoinSelector.val(excessMoney);
+        renderChangeCoinsTemplate(moneyChange, excessMoney);
+      } else {
+        toastr.error("You need deposit more coins", "Error!");
+      }
+    }
+  });
+
+  $(".invalidCoin").click(() => {
+    toastr.error("Invalid Coin", "Error!");
+  });
+
+  $(".terminate").click(() => {
+    totalCoinSelector.val(0);
+    location.reload();
   });
 
   $(".finish").click(() => {
@@ -39,26 +68,6 @@ const depositCoin = (event) => {
   totalCoin = totalCoin + depositCoin;
   addCoin(depositCoin);
   return depositCoin;
-};
-
-const buyDrinks = async (drinks, totalCoin, coins, totalCoinSelector) => {
-  const selectedDrink = $("input[type='radio'][name='drink']:checked");
-  const drinkFound = drinks.find((d) => d.id === parseInt(selectedDrink.val()));
-  if (drinkFound) {
-    const excessMoney = totalCoin - drinkFound.price;
-    if (excessMoney >= 0) {
-      const validCoinStorage = validCoinFound(coins);
-      const moneyChange = getMoneyChange(excessMoney, validCoinStorage);
-      removeDrinkStock(drinkFound.id);
-      drinks = await fetchDrinks();
-      renderTable(drinks);
-      totalCoin = excessMoney;
-      totalCoinSelector.val(excessMoney);
-      renderChangeCoinsTemplate(moneyChange, excessMoney);
-    } else {
-      console.log(`You don't have enough money`);
-    }
-  }
 };
 
 const renderTable = (data) => {
@@ -179,7 +188,7 @@ const renderChangeCoinsTemplate = (moneyChange, excessMoney) => {
           <td>${moneyChange[50] || 0}</td>
         </tr>
         <tr>
-          <td>1 RM</td>
+          <td>RM 1</td>
           <td>${moneyChange[100] || 0}</td>
         </tr>
       </tbody>

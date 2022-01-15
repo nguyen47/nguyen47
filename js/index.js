@@ -33,6 +33,14 @@ $(document).ready(() => {
     window.location.href = "maintainer.html";
     return false;
   });
+  $(".btn-reset").click(async () => {
+    const coins = await fetchCoins();
+    const drinks = await fetchDrinks();
+    localStorage.setItem("isLogin", false);
+    localStorage.setItem("state", false);
+    localStorage.setItem("drinks", JSON.stringify(drinks));
+    localStorage.setItem("coins", JSON.stringify(coins));
+  });
 });
 
 const startSimulation = () => {
@@ -51,4 +59,20 @@ const stopSimulation = () => {
   $(".btn-vm-panel").prop("disabled", false);
   $(".btn-maintainer-panel").prop("disabled", false);
   $(".btn-start-simulation").prop("disabled", true);
+};
+
+const fetchDrinks = async () => {
+  return $.getJSON("../json/drink.json", (data) => {
+    localStorage.setItem("drinks", JSON.stringify(data));
+  }).fail(() => {
+    console.log("An error has occurred.");
+  });
+};
+
+const fetchCoins = async () => {
+  return $.getJSON("../json/coin.json", (data) => {
+    localStorage.setItem("coins", JSON.stringify(data));
+  }).fail(() => {
+    console.log("An error has occurred.");
+  });
 };
