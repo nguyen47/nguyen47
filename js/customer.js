@@ -24,22 +24,56 @@ $(document).ready(async () => {
     const drinkFound = drinks.find(
       (d) => d.id === parseInt(selectedDrink.val())
     );
-    if (drinkFound) {
-      const excessMoney = totalCoin - drinkFound.price;
-      if (excessMoney >= 0) {
-        const validCoinStorage = validCoinFound(coins);
-        const moneyChange = getMoneyChange(excessMoney, validCoinStorage);
+    const excessMoney = totalCoin - drinkFound.price;
+    if (excessMoney < 0) {
+      toastr.error("You need deposit more coins", "Error!");
+    } else {
+      const validCoinStorage = validCoinFound(coins);
+      const moneyChange = getMoneyChange(excessMoney, validCoinStorage);
+      const reCalculateMoney =
+        moneyChange[10] * 10 +
+        moneyChange[20] * 20 +
+        moneyChange[50] * 50 +
+        moneyChange[100] * 100;
+      const enoughMoneyChange = validateEnoughMoney(
+        moneyChange,
+        coins,
+        reCalculateMoney,
+        excessMoney
+      );
+      if (enoughMoneyChange) {
+        // remove coin stock
+        for (const key in moneyChange) {
+          removeCoinStock(key, moneyChange[key]);
+        }
         removeDrinkStock(drinkFound.id);
         drinks = await fetchDrinks();
         renderTable(drinks);
         totalCoin = excessMoney;
         totalCoinSelector.val(excessMoney);
         renderChangeCoinsTemplate(moneyChange, excessMoney);
-      } else {
-        toastr.error("You need deposit more coins", "Error!");
       }
     }
   });
+
+  const validateEnoughMoney = (
+    moneyChange,
+    coins,
+    reCalculateMoney,
+    excessMoney
+  ) => {
+    if (
+      moneyChange[10] > coins[0].stock ||
+      moneyChange[20] > coins[1].stock ||
+      moneyChange[50] > coins[2].stock ||
+      moneyChange[100] > coins[3].stock ||
+      reCalculateMoney !== excessMoney
+    ) {
+      toastr.error("Not enough money to exchange", "Error!");
+      return false;
+    }
+    return true;
+  };
 
   $(".invalidCoin").click(() => {
     toastr.error("Invalid Coin", "Error!");
@@ -149,10 +183,6 @@ const getMoneyChange = (money, bills) => {
     change[b] = Math.floor(money / b);
     money -= b * change[b];
   });
-
-  for (const key in change) {
-    removeCoinStock(key, change[key]);
-  }
   return change;
 };
 

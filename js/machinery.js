@@ -44,10 +44,14 @@ const updateCoin = async () => {
   const coins = await fetchCoins();
   const coinValue = parseInt($("#typeOfCoin").val());
   const coinIndex = coins.findIndex((c) => c.value === coinValue);
-  coins[coinIndex].stock = parseInt($("#coinStock").val());
-  localStorage.setItem("coins", JSON.stringify(coins));
-  $("#coin-coin").modal("hide");
-  location.reload();
+  if (parseInt($("#coinStock").val()) < 100) {
+    coins[coinIndex].stock = parseInt($("#coinStock").val());
+    localStorage.setItem("coins", JSON.stringify(coins));
+    $("#coin-coin").modal("hide");
+    location.reload();
+  } else {
+    toastr.error("Coin stock should be less than 100", "Error!");
+  }
 };
 
 const displayCoinModal = (event, coins) => {
@@ -64,12 +68,16 @@ const updateDrink = async () => {
   const drinkName = $("#drink-name").val();
   const drinkPrice = $("#drink-price").val();
   const drinkStock = $("#drink-stock").val();
-  drinks[drinkIndex].drink = drinkName;
-  drinks[drinkIndex].price = parseInt(drinkPrice);
-  drinks[drinkIndex].stock = parseInt(drinkStock);
-  localStorage.setItem("drinks", JSON.stringify(drinks));
-  $("#drink-modal").modal("hide");
-  location.reload();
+  if (drinkStock <= 20) {
+    drinks[drinkIndex].drink = drinkName;
+    drinks[drinkIndex].price = parseInt(drinkPrice);
+    drinks[drinkIndex].stock = parseInt(drinkStock);
+    localStorage.setItem("drinks", JSON.stringify(drinks));
+    $("#drink-modal").modal("hide");
+    location.reload();
+  } else {
+    toastr.error("Drink stock should be less than 20", "Error!");
+  }
 };
 
 const displayUpdateModal = (event, drinks) => {
