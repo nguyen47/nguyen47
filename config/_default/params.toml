@@ -30,7 +30,12 @@ disableTextInHeader = false
 
 # defaultBackgroundImage = "IMAGE.jpg" # used as default for background images
 # defaultFeaturedImage = "IMAGE.jpg" # used as default for featured images in all articles
-# defaultSocialImage = "/android-chrome-512x512.png" # used as default for social media sharing (Open Graph and Twitter)
+# Site-wide social card fallback. Deliberately NOT `defaultSocialImage` — that
+# theme param only patches og:image and leaves Hugo's twitter:card at "summary".
+# `images` feeds Hugo's internal opengraph/twitter_cards templates instead, so
+# og:image AND twitter:card="summary_large_image" both come out right. A page
+# overrides it by setting `images` in its own front matter.
+images = ["img/og-default.png"]
 hotlinkFeatureImage = false
 # Thumbnail aspect ratio as a number (e.g., "1.5", "1.0", "1.777")
 # thumbnailAspectRatio = "1.5"

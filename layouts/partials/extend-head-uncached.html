@@ -1,0 +1,92 @@
+{{/*
+  Blowfish's per-page <head> extension point (called from the theme's head.html
+  with page context). The cached sibling, extend-head.html, is partialCached on
+  .Site and therefore renders once for the whole site — anything page-dependent
+  has to live here instead.
+
+  Two jobs:
+    1. Keep thin taxonomy pages out of the index.
+    2. Emit a schema.org Person on the homepage.
+*/}}
+
+{{/*
+  Tag and category pages carry no content of their own — they restate titles and
+  summaries that already rank on the real pages. They are excluded from the
+  sitemap in params.toml ([sitemap] excludedKinds), but exclusion is not a crawl
+  directive, so without this they still get crawled and indexed. "follow" keeps
+  the link graph intact so the pages they point at still benefit.
+*/}}
+{{- if or (eq .Kind "taxonomy") (eq .Kind "term") -}}
+  <meta name="robots" content="noindex, follow">
+{{- end -}}
+
+{{/*
+  The theme's schema.html gives the homepage a WebSite node whose publisher is a
+  Person with nothing but a name. That describes the site, not the person, which
+  is backwards for a portfolio — the entity worth resolving here is the author.
+  This adds a full Person alongside it (separate @id, so the two nodes merge
+  rather than collide) with the employer, education, location and topic signals
+  that let a search engine connect the name to the profile links.
+
+  Built as a map and passed through jsonify so the JSON is escaped correctly and
+  optional fields drop out cleanly instead of leaving trailing commas.
+*/}}
+{{- if .IsHome -}}
+  {{- $author := .Site.Params.Author -}}
+  {{- $person := .Site.Params.person | default dict -}}
+
+  {{/* sameAs: same {platform: url} link maps the theme uses for rel="me". */}}
+  {{- $sameAs := slice -}}
+  {{- range $author.links -}}
+    {{- range $platform, $url := . -}}
+      {{- if not (strings.HasPrefix $url "mailto:") -}}
+        {{- $sameAs = $sameAs | append $url -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $schema := dict
+    "@context" "https://schema.org"
+    "@type" "Person"
+    "@id" (printf "%s#person" site.Home.Permalink)
+    "name" $author.name
+    "url" site.Home.Permalink
+    "mainEntityOfPage" site.Home.Permalink
+  -}}
+  {{- with $author.headline -}}
+    {{- $schema = merge $schema (dict "jobTitle" .) -}}
+  {{- end -}}
+  {{- with .Site.Params.description -}}
+    {{- $schema = merge $schema (dict "description" .) -}}
+  {{- end -}}
+  {{- with $author.email -}}
+    {{- $schema = merge $schema (dict "email" .) -}}
+  {{- end -}}
+  {{/* Resolved through the asset pipeline so the URL matches the file Hugo
+       actually publishes, rather than the pre-processing path. */}}
+  {{- with resources.Get $author.image -}}
+    {{- $schema = merge $schema (dict "image" .Permalink) -}}
+  {{- end -}}
+  {{- with $sameAs -}}
+    {{- $schema = merge $schema (dict "sameAs" .) -}}
+  {{- end -}}
+  {{- with $person.worksFor -}}
+    {{- $schema = merge $schema (dict "worksFor" (dict "@type" "Organization" "name" .)) -}}
+  {{- end -}}
+  {{- with $person.alumniOf -}}
+    {{- $schema = merge $schema (dict "alumniOf" (dict "@type" "CollegeOrUniversity" "name" .)) -}}
+  {{- end -}}
+  {{- with $person.addressLocality -}}
+    {{- $schema = merge $schema (dict "address" (dict
+      "@type" "PostalAddress"
+      "addressLocality" .
+      "addressCountry" $person.addressCountry)) -}}
+  {{- end -}}
+  {{- with $person.knowsAbout -}}
+    {{- $schema = merge $schema (dict "knowsAbout" .) -}}
+  {{- end -}}
+
+  <script type="application/ld+json">
+  {{ $schema | jsonify (dict "indent" "  ") | safeJS }}
+  </script>
+{{- end -}}

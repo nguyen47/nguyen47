@@ -35,10 +35,11 @@ enableEmoji = true
   author = "authors"
   series = "series"
 
+# changefreq and priority are deliberately unset: Google ignores both, and a
+# uniform "daily/0.5" on a static portfolio is noise in every crawl. Omitting
+# them leaves <loc> + <lastmod>, which Google does read.
 [sitemap]
-  changefreq = 'daily'
   filename = 'sitemap.xml'
-  priority = 0.5
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]
