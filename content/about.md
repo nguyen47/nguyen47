@@ -10,7 +10,7 @@ showWordCount: false
 
 ## The short version
 
-I am an AI Solutions Architect and Pre-Sales Consultant at CMC Global, covering APAC enterprise pursuits with Singapore and Malaysia as primary markets. I hold an MSc in Computer Science from Universiti Teknologi Malaysia, and I am AWS Certified AI Practitioner, PSM II and PSPO II certified.
+I am a Solution Consultant at CMC Global, covering AI and enterprise pre-sales for APAC with Singapore and Malaysia as primary markets. I hold an MSc in Computer Science from Universiti Teknologi Malaysia, and I am AWS Certified AI Practitioner, PSM II and PSPO II certified.
 
 ## The longer version
 

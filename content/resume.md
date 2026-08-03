@@ -66,7 +66,7 @@ ODC/GDC planning and governance · APAC market research and account targeting ·
 
 ## Experience
 
-### Lead Business Analyst / AI Solutions Consultant — CMC Global
+### Solution Consultant — CMC Global
 *Da Nang, Vietnam · 07/2022 – Present*
 
 - Lead AI and enterprise pre-sales for APAC clients (primary markets: Singapore and Malaysia), owning the full lifecycle from RFP analysis and discovery through technical solutioning, costing and proposal closure.
@@ -76,23 +76,20 @@ ODC/GDC planning and governance · APAC market research and account targeting ·
 - Own resource augmentation pursuits end to end — role profiling, candidate assessment, interview question banks, rate card modelling and client submission.
 - Maintain pipeline analytics and win/loss forensics used for regional GTM prioritisation.
 
-### Product Manager — Digital Unicorn
+### Backend Developer / Scrum Master — Digital Unicorn
 *07/2021 – 07/2022*
 
-- Owned product direction and delivery for client engagements, managing cross-functional teams of 8–12 across a mixed technology portfolio.
-- Translated commercial requirements into product roadmaps, backlogs and release plans; ran discovery, prioritisation and stakeholder alignment.
+- Joined as a backend developer on **Life In**, a product built for the Belgian market, working on services and APIs alongside the product team.
+- Moved into the Scrum Master role for the same team — running ceremonies, backlog refinement, estimation and release planning, and keeping delivery aligned between the engineering team and the product stakeholders in Belgium.
+- Kept enough hands in the codebase to keep the process grounded: sprint scope negotiated against real technical constraints rather than optimism.
 
-### Scrum Master — Nadlo Webagentur (Remote)
+### Freelance Delivery Lead — Nadlo Webagentur (Remote)
 *01/2018 – 06/2021*
 
-- Facilitated Scrum delivery for distributed European client teams; coached on estimation, backlog hygiene and sprint predictability.
-- Drove process improvement across ceremonies, definition of done and release readiness.
-
-### Project Manager / Team Lead / Developer — FPT
-*03/2015 – 12/2017*
-
-- Progressed from developer to team lead to project manager, delivering software projects for enterprise clients.
-- Combined hands-on engineering with delivery ownership: scope, milestones, risk management and client reporting.
+- Ran a small freelance engineering team as the single client-facing point of contact for a European web agency — scoping requests, agreeing timelines and budgets, and reporting progress directly to the agency's stakeholders.
+- Translated client briefs into work packages, distributed them across the team, and reviewed output before hand-off; owned quality and delivery commitments end to end.
+- Sustained the engagement for three and a half years on repeat work — every follow-on project won on delivery track record rather than a new pitch.
+- Operated fully remote and asynchronously across time zones, which set the working style later used for APAC pre-sales engagements.
 
 ---
 

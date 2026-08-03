@@ -6,7 +6,7 @@ disabled = false
 locale = "en-US"
 label = "English"
 weight = 1
-title = "Nguyen Hoang — AI Solutions Architect & Pre-Sales Consultant"
+title = "Nguyen Hoang — AI Solutions Architect"
 
 [params]
   displayName = "EN"
@@ -41,6 +41,10 @@ title = "Nguyen Hoang — AI Solutions Architect & Pre-Sales Consultant"
 # block holds the biographical facts that have nowhere else to live. Everything
 # in it is asserted on /about and /resume; keep the three in sync.
 [params.person]
+  # The employment title as CMC Global states it. Distinct from author.headline
+  # above, which is positioning for human readers; this one feeds schema.org
+  # jobTitle and should match /resume and LinkedIn.
+  jobTitle = "Solution Consultant"
   worksFor = "CMC Global"
   alumniOf = "Universiti Teknologi Malaysia"
   addressLocality = "Da Nang"
