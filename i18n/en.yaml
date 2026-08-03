@@ -1,0 +1,12 @@
+# Site-level overrides for Blowfish's built-in strings.
+# Hugo merges these over themes/blowfish/i18n/en.yaml — only list keys
+# that differ.
+#
+# The homepage list is ordered by front-matter weight (Hugo sorts by weight
+# before date), so it shows the flagship engagements rather than the newest
+# pages. Label it accordingly.
+shortcode:
+  recent_articles: "Selected work"
+
+recent:
+  show_more: "All projects"

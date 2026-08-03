@@ -1,0 +1,30 @@
+disabled = false
+locale = "en"
+label = "English"
+weight = 1
+title = "Nguyen Hoang — AI Solutions Architect & Pre-Sales Consultant"
+
+[params]
+  displayName = "EN"
+  isoCode = "en"
+  rtl = false
+  dateFormat = "2 January 2006"
+  description = "AI Solutions Architect and APAC Pre-Sales Consultant. Enterprise AI, voice agents, computer vision, digital twin. Based in Da Nang, Vietnam."
+  copyright = "© 2026 Nguyen Hoang"
+  # logo = "img/logo.png"
+  # secondaryLogo = "img/secondary-logo.png"
+
+[params.author]
+  name = "Nguyen Hoang"
+  email = "hoangtrankhoinguyen@gmail.com"
+  headline = "AI Solutions Architect & APAC Pre-Sales Consultant"
+  # Drop a square headshot at assets/img/avatar.jpg and uncomment to show it
+  # on the homepage profile and on article bylines.
+  # image = "img/avatar.jpg"
+  # imageQuality = 96
+  links = [
+    { linkedin = "https://www.linkedin.com/in/nguyen-hoang/" },
+    { github = "https://github.com/nguyen47" },
+    { stack-overflow = "https://stackoverflow.com/users/6786072/nguyen-hoang" },
+    { email = "mailto:hoangtrankhoinguyen@gmail.com" },
+  ]

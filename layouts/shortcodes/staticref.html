@@ -1,0 +1,5 @@
+{{- /* Resolve a path in static/ against the site's baseURL.
+       Keeps links working when the site is served from a subpath
+       (e.g. GitHub Pages project sites at /<repo>/).
+       Usage: {{< staticref "files/cv.pdf" >}} */ -}}
+{{- relURL (.Get 0) -}}
