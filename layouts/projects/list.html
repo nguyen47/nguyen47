@@ -1,0 +1,67 @@
+{{ define "main" }}
+  {{/*
+    Section override for /projects.
+
+    Same shape as the theme's default list — heading, then article-link/simple
+    rows — with one change: the rows are grouped by category instead of by
+    year. /posts groups by "2026"; this groups by "Enterprise engagements" and
+    "Personal builds", because on a portfolio the useful axis is what kind of
+    work it was, not when it happened.
+
+    Groups are declared in content/projects/_index.md. Membership comes from
+    each project's `categories` front matter, and anything matching no group
+    still renders in a trailing catch-all — a typo in front matter should not
+    silently drop a project off the page.
+  */}}
+
+  {{ $all := .Pages.ByWeight }}
+
+  <header>
+    <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+      {{ .Title | emojify }}
+    </h1>
+  </header>
+
+  {{ with .Content }}
+    <section class="mt-2 prose flex max-w-full flex-col dark:prose-invert mb-10">
+      <div class="min-w-0 min-h-0 max-w-prose w-full">
+        {{ . }}
+      </div>
+    </section>
+  {{ end }}
+
+  {{ if gt (len $all) 0 }}
+    {{ $claimed := slice }}
+
+    <section class="space-y-10 w-full">
+      {{ range .Params.groups }}
+        {{ $pages := where $all "Params.categories" "intersect" (slice .category) }}
+        {{ if gt (len $pages) 0 }}
+          {{ $claimed = $claimed | append $pages }}
+          <h2 class="mt-12 text-2xl font-bold text-neutral-700 first:mt-8 dark:text-neutral-300">
+            {{ .title | emojify }}
+          </h2>
+          {{ range $pages }}
+            {{ partial "article-link/simple.html" . }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+
+      {{ $ungrouped := complement $claimed $all }}
+      {{ if gt (len $ungrouped) 0 }}
+        <h2 class="mt-12 text-2xl font-bold text-neutral-700 first:mt-8 dark:text-neutral-300">
+          Other
+        </h2>
+        {{ range $ungrouped }}
+          {{ partial "article-link/simple.html" . }}
+        {{ end }}
+      {{ end }}
+    </section>
+  {{ else }}
+    <section class="mt-10 prose dark:prose-invert">
+      <p class="py-8 border-t">
+        <em>{{ i18n "list.no_articles" | emojify }}</em>
+      </p>
+    </section>
+  {{ end }}
+{{ end }}

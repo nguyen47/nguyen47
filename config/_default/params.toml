@@ -17,7 +17,10 @@ enableStructuredBreadcrumbs = true
 
 replyByEmail = false
 
-mainSections = ["projects", "posts"]
+# Drives the homepage "Selected work" block only (theme uses it nowhere else).
+# Projects-only so it stays consistent with showMoreLinkDest below — with
+# posts included, a weighted post would silently displace a project.
+mainSections = ["projects"]
 # robots = ""
 
 disableImageOptimization = false
@@ -100,7 +103,10 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
   showRelatedContent = true
   relatedContentLimit = 3
   showTaxonomies = true # Enable the display of taxonomies for the related article.
-  showCategories = true # These will show if showTaxonomies is true.
+  # Off: the category badge never adds information on this site. On /projects
+  # the group headings already say Enterprise vs Personal, and on /posts the
+  # category duplicates a tag. Categories still drive grouping and /categories/.
+  showCategories = false # These will show if showTaxonomies is true.
   showTags = true # These will show if showTaxonomies is true.
   showCategoriesInSecondaryColor = false # This will change the color of category badges, so the user can better distinguish between the two. Only if showTaxonomies is true.
   showAuthorsBadges = false
