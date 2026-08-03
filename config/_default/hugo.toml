@@ -3,9 +3,10 @@
 # https://blowfish.page/docs/getting-started/
 
 theme = "blowfish"
-# Overridden at deploy time by the GitHub Pages workflow (--baseURL).
-# Change this to your custom domain once one is pointed at the site.
-baseURL = "https://nguyen47.github.io/"
+# Overridden at deploy time by the GitHub Pages workflow (--baseURL),
+# which resolves to the custom domain configured in Pages settings.
+# static/CNAME holds the same domain so it survives every deploy.
+baseURL = "https://htknguyen.dev/"
 defaultContentLanguage = "en"
 
 # pluralizeListTitles = "true" # hugo function useful for non-english languages, find out more in  https://gohugo.io/getting-started/configuration/#pluralizelisttitles
