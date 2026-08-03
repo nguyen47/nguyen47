@@ -18,10 +18,11 @@ title = "Nguyen Hoang — AI Solutions Architect & Pre-Sales Consultant"
   name = "Nguyen Hoang"
   email = "hoangtrankhoinguyen@gmail.com"
   headline = "AI Solutions Architect & APAC Pre-Sales Consultant"
-  # Drop a square headshot at assets/img/avatar.jpg and uncomment to show it
-  # on the homepage profile and on article bylines.
-  # image = "img/avatar.jpg"
-  # imageQuality = 96
+  # Currently a generated "NH" monogram placeholder. Replace
+  # assets/img/avatar.jpg with a square headshot (1000x1000 or larger) —
+  # no config change needed. Used on the homepage profile and article bylines.
+  image = "img/avatar.jpg"
+  imageQuality = 96
   links = [
     { linkedin = "https://www.linkedin.com/in/nguyen-hoang/" },
     { github = "https://github.com/nguyen47" },
