@@ -1,7 +1,6 @@
 ---
 title: "The 10x Was Real. It Lasted One Month."
 date: 2026-08-03
-draft: true
 description: "374 commits, 142 days, one developer, two app stores. What the git log actually says about AI-assisted development, once I stopped counting commits."
 summary: "374 commits, 142 days, one developer, two app stores. What the git log actually says about AI-assisted development, once I stopped counting commits."
 tags: ["AI", "Flutter", "Side Project", "Productivity"]
